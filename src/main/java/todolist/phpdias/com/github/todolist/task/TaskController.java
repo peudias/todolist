@@ -1,11 +1,13 @@
 package todolist.phpdias.com.github.todolist.task;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,5 +40,13 @@ public class TaskController {
 
         var taskCreated = this.taskRepository.save(taskModel);
         return ResponseEntity.status(HttpStatus.OK).body(taskCreated);
+    }
+
+    @GetMapping("/")
+    public List<TaskModel> list(HttpServletRequest request){
+        var userId = request.getAttribute("userId");
+
+        var tasksList = this.taskRepository.findByUserId((UUID)userId);
+        return tasksList;   
     }
 }
