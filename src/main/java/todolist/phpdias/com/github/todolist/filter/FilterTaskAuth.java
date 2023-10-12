@@ -1,4 +1,4 @@
-package todolist.phpdias.com.github.todolist.Filter;
+package todolist.phpdias.com.github.todolist.filter;
 
 import java.io.IOException;
 import java.util.Base64;
