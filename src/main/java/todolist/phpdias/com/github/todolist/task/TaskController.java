@@ -57,13 +57,23 @@ public class TaskController {
 
     //http://localhost:8080/tasks/23129831892-cdndc-1238123
     @PutMapping("/{id}")
-    public TaskModel update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID id){
+    public ResponseEntity update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID id){
         var userId = request.getAttribute("userId");
 
         var taskTarget = this.taskRepository.findById(id).orElse(null);
 
+        if(taskTarget == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task not found.");
+        }
+
+        if(!taskTarget.getUserId().equals(userId)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User can't update this task.");
+        }
+
         Util.copyNonNullProperties(taskModel, taskTarget);
 
-        return this.taskRepository.save(taskTarget);
+        var taskUpdated = this.taskRepository.save(taskTarget);
+
+        return ResponseEntity.ok().body(taskUpdated);
     }
 }
